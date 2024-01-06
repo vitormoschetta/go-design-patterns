@@ -7,24 +7,16 @@ import (
 )
 
 func TestSingleton2(t *testing.T) {
-	// Setup 1
 	// Arrange
 	SetupCache()
 
 	// Act
 	Add("key", "value")
-	res := Get("key")
 
 	// Assert
-	assert.Equal(t, "value", res)
-
-	// Setup 2
-	// Arrange
-	SetupCache()
-
-	// Act
-	res2 := Get("key")
-
-	// Assert
-	assert.Equal(t, "value", res2)
+	for i := 0; i < 5; i++ {
+		SetupCache()
+		res := Get("key")
+		assert.Equal(t, "value", res)
+	}
 }

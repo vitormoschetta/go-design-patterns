@@ -7,34 +7,16 @@ import (
 )
 
 func TestSingleton(t *testing.T) {
-	// Setup 1
 	// Arrange
-	cache := Cache{} // not using NewCache()
+	cache := &Cache{}
 
 	// Act
 	cache.Add("key", "value")
-	res := cache.Get("key")
 
 	// Assert
-	assert.Equal(t, "value", res)
-
-	// Setup 2
-	// Arrange
-	cache2 := NewCache()
-
-	// Act
-	res2 := cache2.Get("key")
-
-	// Assert
-	assert.Equal(t, "value", res2)
-
-	// Setup 3
-	// Arrange
-	cache3 := NewCache()
-
-	// Act
-	res3 := cache3.Get("key")
-
-	// Assert
-	assert.Equal(t, "value", res3)
+	for i := 0; i < 5; i++ {
+		cache = NewCache()
+		res := cache.Get("key")
+		assert.Equal(t, "value", res)
+	}
 }
