@@ -10,6 +10,10 @@ type IEmailSender interface {
 // IMPLEMENTAÇÃO DE ENVIO DE E-MAIL PARA UM SERVIDOR SMTP
 type SmtpEmailSender struct{}
 
+func NewSmtpEmailSender() *SmtpEmailSender {
+	return &SmtpEmailSender{}
+}
+
 func (s *SmtpEmailSender) SendEmail(to, subject, body string) error {
 	fmt.Printf("Enviando e-mail para %s com assunto '%s' e corpo '%s'\n", to, subject, body)
 	return nil
@@ -36,15 +40,15 @@ func (p *ProxyEmailSender) SendEmail(to, subject, body string) error {
 }
 
 type UserService struct {
-	ProxyEmailSender ProxyEmailSender
+	EmailSender IEmailSender
 }
 
-func NewUserService(proxyEmailSender ProxyEmailSender) *UserService {
+func NewUserService(emailSender IEmailSender) *UserService {
 	return &UserService{
-		ProxyEmailSender: proxyEmailSender,
+		EmailSender: emailSender,
 	}
 }
 
 func (u *UserService) RegisterUser(name, email string) error {
-	return u.ProxyEmailSender.SendEmail(email, "Bem-vindo", "Olá "+name+", seja bem-vindo!")
+	return u.EmailSender.SendEmail(email, "Bem-vindo", "Olá "+name+", seja bem-vindo!")
 }
