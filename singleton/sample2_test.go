@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSingleton2(t *testing.T) {
+func TestSingletonCache2(t *testing.T) {
 	// Arrange
 	SetupCache()
 

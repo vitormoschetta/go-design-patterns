@@ -1,18 +1,18 @@
 package singleton
 
-var instance *Cache
+var cacheInstance *Cache
 
 type Cache struct {
 	cache map[string]string
 }
 
 func NewCache() *Cache {
-	if instance == nil {
-		instance = &Cache{
+	if cacheInstance == nil {
+		cacheInstance = &Cache{
 			cache: make(map[string]string),
 		}
 	}
-	return instance
+	return cacheInstance
 }
 
 func (c *Cache) Add(key, value string) {
