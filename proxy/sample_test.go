@@ -32,10 +32,10 @@ func TestSendEmail_WithProxy(t *testing.T) {
 	userService := NewUserService(proxyEmailSender)
 
 	// act
-	msg, err := userService.RegisterUser(name, to)
+	res, err := userService.RegisterUser(name, to)
 
 	// assert
 	expectedMsg := "Proxy: Olá " + name + ", seja bem-vindo!"
 	assert.Nil(t, err)
-	assert.Equal(t, expectedMsg, msg)
+	assert.Equal(t, expectedMsg, res)
 }
