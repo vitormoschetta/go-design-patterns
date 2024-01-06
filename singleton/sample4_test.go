@@ -3,6 +3,8 @@ package singleton
 import (
 	"sync"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestSingletonCounter2(t *testing.T) {
@@ -21,7 +23,5 @@ func TestSingletonCounter2(t *testing.T) {
 	wg.Wait()
 
 	// Assert
-	if GetValue() != numOfGoroutines {
-		t.Errorf("Counter value is not correct, expected: %d, actual: %d", numOfGoroutines, GetValue())
-	}
+	assert.Equal(t, numOfGoroutines, GetValue())
 }
