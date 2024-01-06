@@ -1,23 +1,20 @@
 package singleton
 
-var counter *int
+import "sync"
 
-func SetupCounter() {
-	if counter == nil {
-		counter = new(int)
-	}
-}
+var (
+	counter     int
+	counterLock sync.Mutex
+)
 
 func Increment() {
-	if counter == nil {
-		SetupCounter()
-	}
-	*counter++
+	counterLock.Lock()
+	defer counterLock.Unlock()
+	counter++
 }
 
 func GetValue() int {
-	if counter == nil {
-		SetupCounter()
-	}
-	return *counter
+	counterLock.Lock()
+	defer counterLock.Unlock()
+	return counter
 }
