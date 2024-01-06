@@ -1,12 +1,10 @@
 package singleton
 
 var cache map[string]string
-var instanceCacheMap *map[string]string
 
 func SetupCache() {
-	if instanceCacheMap == nil {
+	if cache == nil {
 		cache = make(map[string]string)
-		instanceCacheMap = &cache
 	}
 }
 
