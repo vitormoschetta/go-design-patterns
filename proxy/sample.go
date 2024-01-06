@@ -2,24 +2,26 @@ package proxy
 
 import "fmt"
 
-type EmailSender interface {
+// INTERFACE DE ENVIO DE E-MAIL
+type IEmailSender interface {
 	SendEmail(to, subject, body string) error
 }
 
+// IMPLEMENTAÇÃO DE ENVIO DE E-MAIL PARA UM SERVIDOR SMTP
 type SmtpEmailSender struct{}
 
 func (s *SmtpEmailSender) SendEmail(to, subject, body string) error {
-	// Imagine que aqui está a lógica de envio de e-mail para um servidor SMTP
+	fmt.Printf("Enviando e-mail para %s com assunto '%s' e corpo '%s'\n", to, subject, body)
 	return nil
 }
 
-// Meu proxy pode ser ou não uma interface, depende da flexibilidade que eu quero ter com ele.
-// Como nesse caso é um serviço de logging e validação internos, não preciso de flexibilidade, então posso usar uma struct
-type ProxyEmailSender struct {
-	EmailSender EmailSender
+// PROXY/INTERCEPTOR QUE ADICIONA UM COMPORTAMENTO AO ENVIO DE E-MAIL
+type ProxyEmailSender struct { // Meu proxy pode ser ou não uma interface, depende da flexibilidade que eu quero ter com ele.
+	// Como nesse caso é um serviço de logging e validação internos, não preciso de flexibilidade, então posso usar uma struct
+	EmailSender IEmailSender
 }
 
-func NewProxyEmailSender(emailSender EmailSender) *ProxyEmailSender {
+func NewProxyEmailSender(emailSender IEmailSender) *ProxyEmailSender {
 	return &ProxyEmailSender{
 		EmailSender: emailSender,
 	}
@@ -28,6 +30,7 @@ func NewProxyEmailSender(emailSender EmailSender) *ProxyEmailSender {
 func (p *ProxyEmailSender) SendEmail(to, subject, body string) error {
 	// Agregamos um objeto intermediario que vai fazer a chamada do metodo SendEmail do objeto EmailSender
 	// A ideia é tratar o dado e fazer logging ou alguma validação antes de chamar o metodo SendEmail do objeto EmailSender
+	fmt.Println("Adicionando comportamento")
 	fmt.Printf("Enviando e-mail para %s com assunto '%s' e corpo '%s'\n", to, subject, body)
 	return p.EmailSender.SendEmail(to, subject, body)
 }

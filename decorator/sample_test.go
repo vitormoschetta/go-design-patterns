@@ -37,7 +37,7 @@ func TestSendEmail_WithDecorator(t *testing.T) {
 			return nil
 		},
 	}
-	decorator := &DecoratorEmailSender{IEmailSender: mockEmailSender}
+	decorator := &DecoratorEmailSender{EmailSender: mockEmailSender}
 	userService := NewUserService2(decorator)
 
 	// act

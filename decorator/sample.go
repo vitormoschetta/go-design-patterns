@@ -11,7 +11,6 @@ type IEmailSender interface {
 type SmtpEmailSender struct{}
 
 func (s *SmtpEmailSender) SendEmail(to, subject, body string) error {
-	// Implementação de envio de e-mail para um servidor SMTP
 	fmt.Printf("Enviando e-mail para %s com assunto '%s' e corpo '%s'\n", to, subject, body)
 	return nil
 }
@@ -29,15 +28,14 @@ func (u *UserService) RegisterUser(name, email string) error {
 	return u.EmailSender.SendEmail(email, "Bem-vindo!", "Obrigado por se registrar!")
 }
 
-// DECORATOR QUE ADICIONA UM COMPORTAMENTO AO ENVIO DE E-MAIL
+// DECORATOR QUE ADICIONA UM COMPORTAMENTO AO REGISTRO DE USUÁRIO
 type IDecorator interface {
 	IEmailSender // Herda os contratos da interface IEmailSender
 	AddedBehavior() string
 }
 
-// DECORATOR QUE ADICIONA UM COMPORTAMENTO AO ENVIO DE E-MAIL
 type DecoratorEmailSender struct {
-	IEmailSender
+	EmailSender IEmailSender
 }
 
 func (d *DecoratorEmailSender) AddedBehavior() string {
@@ -46,7 +44,7 @@ func (d *DecoratorEmailSender) AddedBehavior() string {
 
 func (d *DecoratorEmailSender) SendEmail(to, subject, body string) error {
 	fmt.Println("Adicionando comportamento")
-	return d.IEmailSender.SendEmail(to, subject, body)
+	return d.EmailSender.SendEmail(to, subject, body)
 }
 
 // SERVIÇO DE USUÁRIO QUE UTILIZA O DECORATOR

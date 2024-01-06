@@ -16,6 +16,6 @@ func NewUserService2() *UserService2 {
 }
 
 func (u *UserService2) RegisterUser(name, email string) error {
-	emailSender := SmtpEmailSender2{}
+	emailSender := SmtpEmailSender2{} // alto acoplamento
 	return emailSender.SendEmail(email, "Bem-vindo!", "Obrigado por se registrar!")
 }

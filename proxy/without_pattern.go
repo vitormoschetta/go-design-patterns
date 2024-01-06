@@ -4,10 +4,10 @@ import "fmt"
 
 // Defina a estrutura UserService que depende de EmailSender
 type UserService2 struct {
-	EmailSender EmailSender
+	EmailSender IEmailSender
 }
 
-func NewUserService2(emailSender EmailSender) *UserService2 {
+func NewUserService2(emailSender IEmailSender) *UserService2 {
 	return &UserService2{
 		EmailSender: emailSender,
 	}

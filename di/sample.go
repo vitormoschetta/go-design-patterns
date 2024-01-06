@@ -2,24 +2,25 @@ package di
 
 import "fmt"
 
-type EmailSender interface {
+// INTERFACE DE ENVIO DE E-MAIL
+type IEmailSender interface {
 	SendEmail(to, subject, body string) error
 }
 
+// IMPLEMENTAÇÃO DE ENVIO DE E-MAIL PARA UM SERVIDOR SMTP
 type SmtpEmailSender struct{}
 
 func (s *SmtpEmailSender) SendEmail(to, subject, body string) error {
-	// Imagine que aqui está a lógica de envio de e-mail para um servidor SMTP
 	fmt.Printf("Enviando e-mail para %s com assunto '%s' e corpo '%s'\n", to, subject, body)
 	return nil
 }
 
-// Defina a estrutura UserService que depende de EmailSender
+// SERVIÇO DE USUÁRIO QUE UTILIZA O ENVIO DE E-MAIL
 type UserService struct {
-	EmailSender EmailSender
+	EmailSender IEmailSender
 }
 
-func NewUserService(emailSender EmailSender) *UserService {
+func NewUserService(emailSender IEmailSender) *UserService {
 	return &UserService{EmailSender: emailSender}
 }
 
