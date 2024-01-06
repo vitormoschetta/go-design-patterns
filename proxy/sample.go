@@ -35,7 +35,6 @@ func (p *ProxyEmailSender) SendEmail(to, subject, body string) error {
 	// Agregamos um objeto intermediario que vai fazer a chamada do metodo SendEmail do objeto EmailSender
 	// A ideia é tratar o dado e fazer logging ou alguma validação antes de chamar o metodo SendEmail do objeto EmailSender
 	fmt.Println("Adicionando comportamento")
-	fmt.Printf("Enviando e-mail para %s com assunto '%s' e corpo '%s'\n", to, subject, body)
 	return p.EmailSender.SendEmail(to, subject, body)
 }
 

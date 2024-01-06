@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSendEmail(t *testing.T) {
+func TestSendEmail_WithoutProxy(t *testing.T) {
 	// arrange
 	emailSender := NewSmtpEmailSender()
 	userService := NewUserService(emailSender)
