@@ -21,11 +21,15 @@ func (s *SmtpEmailSender) SendEmail(to, subject, body string) (string, error) {
 }
 
 // SERVIÇO DE USUÁRIO QUE UTILIZA O ENVIO DE E-MAIL
+type IUserService interface {
+	RegisterUser(name, email string) (string, error)
+}
+
 type UserService struct {
 	EmailSender IEmailSender
 }
 
-func NewUserService(emailSender IEmailSender) *UserService {
+func NewUserService(emailSender IEmailSender) IUserService {
 	return &UserService{EmailSender: emailSender}
 }
 
@@ -34,35 +38,24 @@ func (u *UserService) RegisterUser(name, email string) (string, error) {
 	return u.EmailSender.SendEmail(email, "Bem-vindo", body)
 }
 
-// DECORATOR QUE ADICIONA UM COMPORTAMENTO AO REGISTRO DE USUÁRIO
-type IDecorator interface {
-	IEmailSender // Herda os contratos da interface IEmailSender
-	AddedBehavior() string
+// DECORATOR DE USER SERVICE
+type UserServiceDecorator struct {
+	UserService IUserService
 }
 
-type DecoratorEmailSender struct {
-	EmailSender IEmailSender
+func NewUserServiceDecorator(userService IUserService) IUserService {
+	return &UserServiceDecorator{UserService: userService}
 }
 
-func (d *DecoratorEmailSender) AddedBehavior() string {
-	return "Comportamento adicionado"
+func (u *UserServiceDecorator) RegisterUser(name, email string) (string, error) {
+	msg, _ := u.AddBehavior()
+	fmt.Println(msg)
+	res, err := u.UserService.RegisterUser(name, email)
+	return res + msg, err
 }
 
-func (d *DecoratorEmailSender) SendEmail(to, subject, body string) (string, error) {
-	return d.EmailSender.SendEmail(to, subject, body)
-}
-
-// SERVIÇO DE USUÁRIO QUE UTILIZA O DECORATOR
-type UserService2 struct {
-	Decorator IDecorator
-}
-
-func NewUserService2(decorator IDecorator) *UserService2 {
-	return &UserService2{Decorator: decorator}
-}
-
-func (u *UserService2) RegisterUser(name, email string) (string, error) {
-	res := u.Decorator.AddedBehavior() // Comportamento adicionado
-	body := "Olá " + name + ", seja bem-vindo!"
-	return u.Decorator.SendEmail(email, "Bem-vindo", body+" "+res)
+func (u *UserServiceDecorator) AddBehavior() (string, error) {
+	msg := " Comportamento adicionado"
+	fmt.Println(msg)
+	return msg, nil
 }

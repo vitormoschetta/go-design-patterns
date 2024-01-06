@@ -28,11 +28,11 @@ func TestSendEmail_WithoutDecorator(t *testing.T) {
 func TestSendEmail_WithDecorator(t *testing.T) {
 	// arrange
 	emailSender := NewSmtpEmailSender()
-	decorator := &DecoratorEmailSender{EmailSender: emailSender}
-	userService := NewUserService2(decorator)
+	userService := NewUserService(emailSender)
+	userServiceDecorator := NewUserServiceDecorator(userService)
 
 	// act
-	res, err := userService.RegisterUser(name, to)
+	res, err := userServiceDecorator.RegisterUser(name, to)
 
 	// assert
 	expectedMsg := "Olá " + name + ", seja bem-vindo! Comportamento adicionado"
