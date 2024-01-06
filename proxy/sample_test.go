@@ -6,16 +6,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const (
+	name = "John Doe"
+	to   = "johndoe@mail.com"
+)
+
 func TestSendEmail_WithoutProxy(t *testing.T) {
 	// arrange
 	emailSender := NewSmtpEmailSender()
 	userService := NewUserService(emailSender)
 
 	// act
-	err := userService.RegisterUser("John Doe", "user@mail.com")
+	res, err := userService.RegisterUser(name, to)
 
 	// assert
+	espectedRes := "Olá " + name + ", seja bem-vindo!"
 	assert.Nil(t, err)
+	assert.Equal(t, espectedRes, res)
 }
 
 func TestSendEmail_WithProxy(t *testing.T) {
@@ -25,8 +32,10 @@ func TestSendEmail_WithProxy(t *testing.T) {
 	userService := NewUserService(proxyEmailSender)
 
 	// act
-	err := userService.RegisterUser("John Doe", "user@mail.com")
+	msg, err := userService.RegisterUser(name, to)
 
 	// assert
+	expectedMsg := "Proxy: Olá " + name + ", seja bem-vindo!"
 	assert.Nil(t, err)
+	assert.Equal(t, expectedMsg, msg)
 }

@@ -4,24 +4,24 @@ import "fmt"
 
 // INTERFACE DE ENVIO DE E-MAIL
 type IEmailSender interface {
-	SendEmail(to, subject, body string) error
+	SendEmail(to, subject, body string) (string, error)
 }
 
-// IMPLEMENTAÇÃO DE ENVIO DE E-MAIL PARA UM SERVIDOR SMTP
+// IMPLEMENTAÇÃO DE ENVIO DE E-MAIL
 type SmtpEmailSender struct{}
 
 func NewSmtpEmailSender() *SmtpEmailSender {
 	return &SmtpEmailSender{}
 }
 
-func (s *SmtpEmailSender) SendEmail(to, subject, body string) error {
-	fmt.Printf("Enviando e-mail para %s com assunto '%s' e corpo '%s'\n", to, subject, body)
-	return nil
+func (s *SmtpEmailSender) SendEmail(to, subject, body string) (string, error) {
+	msg := fmt.Sprintf("Enviando e-mail para %s, assunto: %s, corpo: %s", to, subject, body)
+	fmt.Println(msg)
+	return body, nil
 }
 
-// PROXY/INTERCEPTOR QUE ADICIONA UM COMPORTAMENTO AO ENVIO DE E-MAIL
-type ProxyEmailSender struct { // Meu proxy pode ser ou não uma interface, depende da flexibilidade que eu quero ter com ele.
-	// Como nesse caso é um serviço de logging e validação internos, não preciso de flexibilidade, então posso usar uma struct
+// PROXY/INTERCEPTOR QUE IMPLEMENTA A INTERFACE DE ENVIO DE E-MAIL E FUNCIONA COMO UM OBJETO INTERMEDIARIO ENTRE O USUARIO E O OBJETO REAL DE ENVIO DE E-MAIL
+type ProxyEmailSender struct {
 	EmailSender IEmailSender
 }
 
@@ -31,11 +31,16 @@ func NewProxyEmailSender(emailSender IEmailSender) *ProxyEmailSender {
 	}
 }
 
-func (p *ProxyEmailSender) SendEmail(to, subject, body string) error {
-	// Agregamos um objeto intermediario que vai fazer a chamada do metodo SendEmail do objeto EmailSender
-	// A ideia é tratar o dado e fazer logging ou alguma validação antes de chamar o metodo SendEmail do objeto EmailSender
-	fmt.Println("Adicionando comportamento")
-	return p.EmailSender.SendEmail(to, subject, body)
+func (p *ProxyEmailSender) SendEmail(to, subject, body string) (string, error) {
+	// Aqui podemos adicionar comportamentos extras, seja antes ou depois de chamar o metodo SendEmail do objeto real, funcionando como um interceptor/middleware
+
+	// Chama o metodo SendEmail do objeto real
+	msg, err := p.EmailSender.SendEmail(to, subject, body)
+	if err != nil {
+		return "", err
+	}
+	msg = "Proxy: " + msg
+	return msg, nil
 }
 
 type UserService struct {
@@ -48,6 +53,7 @@ func NewUserService(emailSender IEmailSender) *UserService {
 	}
 }
 
-func (u *UserService) RegisterUser(name, email string) error {
-	return u.EmailSender.SendEmail(email, "Bem-vindo", "Olá "+name+", seja bem-vindo!")
+func (u *UserService) RegisterUser(name, email string) (string, error) {
+	body := "Olá " + name + ", seja bem-vindo!"
+	return u.EmailSender.SendEmail(email, "Bem-vindo", body)
 }
