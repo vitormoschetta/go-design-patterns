@@ -9,10 +9,12 @@ Geralmente queremos injeção de dependência quando se trata de comunicação c
 
 
 ### Proxy 
-Proxy é um padrão de projeto que nos permite criar uma representação de um objeto. Dessa forma, podemos criar uma representação de um objeto e controlar o acesso a ele.  
-É como adicionar um objeto intermediário entre o cliente e o objeto real. 
+Proxy é um padrão de projeto estrutural que permite a criação de um objeto intermediário que atua como substituto para outro objeto. 
+Esse substituto, conhecido como “proxy”, controla o acesso ao objeto real, podendo adicionar funcionalidades extras, como controle de acesso, logging ou lazy loading.
 
-Geralmente usamos proxy quando queremos controlar o acesso a um determinado objeto, podendo adicionar lógica antes e depois da execução do objeto real. 
+
+### Decorator
+Decorator é um padrão de projeto que nos permite adicionar comportamentos a um objeto. Dessa forma, podemos adicionar comportamentos a um objeto sem a necessidade de alterar o código do objeto.  
 
 
 ### Facade 
