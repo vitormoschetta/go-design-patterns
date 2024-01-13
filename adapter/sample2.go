@@ -12,6 +12,7 @@ type ICache interface {
 	Set(ctx context.Context, key, value string) (string, error)
 }
 
+// Criamos um cache local, que implementa a interface ICache
 type CacheLocal struct {
 	cache map[string]string
 }
@@ -26,7 +27,8 @@ func (c *CacheLocal) Set(ctx context.Context, key, value string) (string, error)
 }
 
 // ADAPTER
-// Aqui criamos um adapter para o redis, que implementa a interface ICache
+// Aqui precisamos criar um adapter para o redis, que implementa a interface ICache
+// Esse adapter foi necessário, pois o redis.Client não implementa a interface ICache
 type CacheRedis struct {
 	cache redis.Client
 }
