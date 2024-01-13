@@ -8,7 +8,7 @@ import (
 
 const (
 	name = "John Doe"
-	to   = "johndoe@mail.com"
+	to   = ""
 )
 
 func TestSendEmail_WithoutProxy(t *testing.T) {
@@ -16,11 +16,12 @@ func TestSendEmail_WithoutProxy(t *testing.T) {
 	emailSender := NewSmtpEmailSender()
 	userService := NewUserService(emailSender)
 
+	espectedRes := "Olá " + name + ", seja bem-vindo!"
+
 	// act
 	res, err := userService.RegisterUser(name, to)
 
 	// assert
-	espectedRes := "Olá " + name + ", seja bem-vindo!"
 	assert.Nil(t, err)
 	assert.Equal(t, espectedRes, res)
 }
@@ -31,11 +32,12 @@ func TestSendEmail_WithProxy(t *testing.T) {
 	proxyEmailSender := NewProxyEmailSender(emailSender)
 	userService := NewUserService(proxyEmailSender)
 
+	espectedRes := ""
+
 	// act
 	res, err := userService.RegisterUser(name, to)
 
 	// assert
-	expectedMsg := "Proxy: Olá " + name + ", seja bem-vindo!"
-	assert.Nil(t, err)
-	assert.Equal(t, expectedMsg, res)
+	assert.NotNil(t, err)
+	assert.Equal(t, espectedRes, res)
 }

@@ -32,15 +32,36 @@ func NewProxyEmailSender(emailSender IEmailSender) *ProxyEmailSender {
 }
 
 func (p *ProxyEmailSender) SendEmail(to, subject, body string) (string, error) {
-	// Aqui podemos adicionar comportamentos extras, seja antes ou depois de chamar o metodo SendEmail do objeto real, funcionando como um interceptor/middleware
+	// Aqui agregamos as validações necessárias para o envio de e-mail, funcionando como um interceptor/middleware.
+	err := p.ValidateEmail(to, subject, body)
+	if err != nil {
+		return "", err
+	}
 
 	// Chama o metodo SendEmail do objeto real
 	msg, err := p.EmailSender.SendEmail(to, subject, body)
 	if err != nil {
 		return "", err
 	}
-	msg = "Proxy: " + msg
 	return msg, nil
+}
+
+func (p *ProxyEmailSender) ValidateEmail(to, subject, body string) error {
+	errors := []string{}
+	if to == "" {
+		errors = append(errors, "O campo to é obrigatório")
+	}
+	if subject == "" {
+		errors = append(errors, "O campo subject é obrigatório")
+	}
+	if body == "" {
+		errors = append(errors, "O campo body é obrigatório")
+	}
+
+	if len(errors) > 0 {
+		return fmt.Errorf("Erros: %s", errors)
+	}
+	return nil
 }
 
 type UserService struct {
